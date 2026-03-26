@@ -64,8 +64,8 @@ public class MinioService {
                         .build()
             );
         } catch (Exception e) {
-            log.error("Error generating presigned url!");
-            return null;
+            log.error("Error generating presigned url for the file {}!", filePath, e);
+            throw new BusinessException("Error generating presigned url for the file "+filePath);
         }
     }
 

@@ -4,6 +4,7 @@ import com.clara.ops.challenge.document_management_service_challenge.controller.
 import com.clara.ops.challenge.document_management_service_challenge.controller.request.UploadDocumentRequest;
 import com.clara.ops.challenge.document_management_service_challenge.controller.response.DocumentDownloadUrlResponse;
 import com.clara.ops.challenge.document_management_service_challenge.controller.response.PaginatedDocumentSearchResponse;
+import com.clara.ops.challenge.document_management_service_challenge.exception.BusinessException;
 import com.clara.ops.challenge.document_management_service_challenge.exception.ValidationException;
 import com.clara.ops.challenge.document_management_service_challenge.service.DocumentService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -53,7 +53,7 @@ public class DocumentManagementController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "The document was uploaded successfully.")
     })
-    public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) throws IOException {
+    public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) {
         UploadDocumentRequest uploadDocument = convertAndValidateJson(metadata);
         service.uploadDocument(file, uploadDocument);
     }
@@ -95,17 +95,22 @@ public class DocumentManagementController {
         return service.getDocumentDownloadUrl(documentId);
     }
 
-    private UploadDocumentRequest convertAndValidateJson(String metadata) throws JsonProcessingException {
-        UploadDocumentRequest uploadDocument = objectMapper.readValue(metadata, UploadDocumentRequest.class);
+    private UploadDocumentRequest convertAndValidateJson(String metadata) {
+        try {
+            UploadDocumentRequest uploadDocument = objectMapper.readValue(metadata, UploadDocumentRequest.class);
 
-        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(uploadDocument, UploadDocumentRequest.class.getSimpleName());
-        validator.validate(uploadDocument, bindingResult);
+            BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(uploadDocument, UploadDocumentRequest.class.getSimpleName());
+            validator.validate(uploadDocument, bindingResult);
 
-        if (bindingResult.hasErrors()) {
-            throw new ValidationException(bindingResult);
+            if (bindingResult.hasErrors()) {
+                throw new ValidationException(bindingResult);
+            }
+
+            return uploadDocument;
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            throw new BusinessException("Invalid JSON format for metadata");
         }
-
-        return uploadDocument;
     }
 
 }

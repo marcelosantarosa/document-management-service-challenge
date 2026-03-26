@@ -3,8 +3,8 @@ import { check, sleep } from 'k6';
 
 // Configuração do teste
 export const options = {
-    vus: 10, // 10 uploads em paralelo
-    iterations: 10, // total de execuções
+    vus: 10, // 10 uploads in parallel
+    iterations: 10, // total of executions
 };
 
 const BASE_URL = 'http://localhost:8080/document-management/upload';
@@ -17,7 +17,7 @@ export default function () {
         file: http.file(fileData, 'big.pdf', 'application/pdf'),
         metadata: JSON.stringify({
             user: "galdao",
-            name: `big_${__VU}_${__ITER}`, // evita conflito de nome
+            name: `big_${__VU}_${__ITER}`,
             tags: ["ingles", "big"]
         }),
     };
@@ -28,5 +28,5 @@ export default function () {
         'status is 200/201': (r) => r.status === 200 || r.status === 201,
     });
 
-    sleep(1); // pequena pausa (opcional)
+    sleep(1);
 }
