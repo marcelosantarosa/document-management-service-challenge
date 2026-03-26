@@ -17,8 +17,8 @@ MINIO_SECRET_KEY: "KlGFbvWRec+OcV8zPt3iFSuxOTeIq5Bab39Nh4Us"
 k6 run k6/upload-test.js
 ```
 
-// TODO
-- Criar DockerFile
-- Verificar como que vai rodar este DockerFile e DockerCompose
-- Redigir explicações no README.md
-- Como que vai criar o Access Key e Secret Key para entregar?
+## Para criar a imagem docker e rodar o container
+```bash
+docker build -t document-management-service .
+docker run --rm -p 8080:8080 -e JAVA_OPTS="-Xms50m -Xmx50m" document-management-service
+```
