@@ -1,12 +1,11 @@
 package com.clara.ops.challenge.document_management_service_challenge.controller.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder
@@ -15,8 +14,8 @@ import java.util.List;
 @Schema(description = "The paginated document search response.")
 public class PaginatedDocumentSearchResponse {
 
-    private MetadataResponse metadata;
+  private MetadataResponse metadata;
 
-    @Schema(description = "The list of documents.")
-    private List<DocumentResponse> document;
+  @Schema(description = "The list of documents.")
+  private List<DocumentResponse> document;
 }

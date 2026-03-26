@@ -1,18 +1,16 @@
 package com.clara.ops.challenge.document_management_service_challenge.exception;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 public class BusinessException extends RuntimeException {
 
-    @Getter
-    private final HttpStatus httpStatus;
+  @Getter private final HttpStatus httpStatus;
 
-    public BusinessException(String messageKey) {
-        super(messageKey);
-        this.httpStatus = BAD_REQUEST;
-    }
-
+  public BusinessException(String messageKey) {
+    super(messageKey);
+    this.httpStatus = BAD_REQUEST;
+  }
 }

@@ -11,7 +11,6 @@ Pegar estas chaves e adicionar nas variáveis de ambiente do docker-compose.yml
 MINIO_ACCESS_KEY: "RL9HRH51KWYNN50XBP24"
 MINIO_SECRET_KEY: "KlGFbvWRec+OcV8zPt3iFSuxOTeIq5Bab39Nh4Us"
 
-
 ## Load Test
 
 ```bash
@@ -19,9 +18,6 @@ k6 run k6/upload-test.js
 ```
 
 // TODO
-- Revisar código se está aderente ao SOLID
-- Criar testes unitários
-- Rodar Jacoco para verificar a cobertura dos testes
 - Criar DockerFile
 - Verificar como que vai rodar este DockerFile e DockerCompose
 - Redigir explicações no README.md
