@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Schema(description = "The document download URL.")
 public class DocumentDownloadUrlResponse {
 
-    @Schema(description = "The document download URL.")
-    private String url;
-
+  @Schema(description = "The document download URL.")
+  private String url;
 }

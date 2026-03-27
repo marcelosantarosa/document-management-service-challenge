@@ -21,23 +21,39 @@ services:
     ports:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
+    networks:
+      - batch_network
     environment:
       MINIO_ROOT_USER: clara
       MINIO_ROOT_PASSWORD: admin123
-      MINIO_ACCESS_KEY: "RL9HRH51KWYNN50XBP24"
-      MINIO_SECRET_KEY: "KlGFbvWRec+OcV8zPt3iFSuxOTeIq5Bab39Nh4Us"
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
-  # Include all the necessary settings to include a document management service in the stack
-  # Remember to configure this service to limit the memory to 50MB
-#  document-management-service:
-#      environment:
-#        - JAVA_OPTS=-Xmx50m -Xms50m
-#      deploy:
-#        resources:
-#          limits:
-#            memory: 50M
+  document-management-service:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: document-management-service
+    ports:
+      - "8080:8080"
+    networks:
+      - batch_network
+    depends_on:
+      - postgresql
+      - minio
+    environment:
+      - JAVA_OPTS=-Xmx50m -Xms50m
+      - DB_HOST=postgresql
+      - DB_USERNAME=clara
+      - DB_PASSWORD=admin123
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=clara
+      - MINIO_SECRET_KEY=admin123
+      - MINIO_BUCKET_NAME=document-bucket
+    deploy:
+      resources:
+        limits:
+          memory: 200M
 
 volumes:
   challenge_postgresql_data:
