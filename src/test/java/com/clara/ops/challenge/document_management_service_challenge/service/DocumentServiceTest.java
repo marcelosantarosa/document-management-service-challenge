@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -151,8 +150,6 @@ public class DocumentServiceTest {
         .isTrue();
   }
 
-  // TODO sort test
-  @Disabled("Enable after implementing parsing of 'field,direction' in createSort")
   @Test
   void searchDocuments_shouldParseDirection_fromSortParam() {
     DocumentSearchFiltersRequest filters = new DocumentSearchFiltersRequest(null, null, null);

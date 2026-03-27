@@ -13,6 +13,7 @@ import com.clara.ops.challenge.document_management_service_challenge.exception.B
 import com.clara.ops.challenge.document_management_service_challenge.infrastructure.MinioService;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
@@ -74,11 +75,42 @@ public class DocumentService {
     }
   }
 
-  // TODO sort order não está funcionando
   private Sort createSort(List<String> sort) {
     if (sort == null || sort.isEmpty()) {
-      return Sort.by("createdAt").descending();
+      return Sort.by(Sort.Order.desc("createdAt"));
     }
-    return Sort.by(sort.stream().map(Sort.Order::by).toList());
+
+    List<Sort.Order> orders =
+            sort.stream()
+                    .filter(value -> value != null && !value.isBlank())
+                    .map(this::parseSortOrder)
+                    .filter(Objects::nonNull)
+                    .toList();
+
+    if (orders.isEmpty()) {
+      return Sort.by(Sort.Order.desc("createdAt"));
+    }
+
+    return Sort.by(orders);
+  }
+
+  private Sort.Order parseSortOrder(String sortValue) {
+    String[] parts = sortValue.split(",");
+
+    String property = parts[0].trim();
+
+    if (property.equalsIgnoreCase("asc") || property.equalsIgnoreCase("desc")) {
+      return null;
+    }
+
+    if (parts.length < 2 || parts[1].isBlank()) {
+      return Sort.Order.asc(property);
+    }
+
+    String direction = parts[1].trim();
+
+    return "desc".equalsIgnoreCase(direction)
+            ? Sort.Order.desc(property)
+            : Sort.Order.asc(property);
   }
 }
