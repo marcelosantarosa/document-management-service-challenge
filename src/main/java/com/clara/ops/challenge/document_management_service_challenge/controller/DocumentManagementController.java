@@ -54,7 +54,9 @@ public class DocumentManagementController {
         @ApiResponse(responseCode = "201", description = "The document was uploaded successfully.")
       })
   public void uploadDocument(
-      @RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) {
+      @RequestPart("file") MultipartFile file,
+      @Schema(implementation = UploadDocumentRequest.class) @RequestPart("metadata")
+          String metadata) {
     UploadDocumentRequest uploadDocument = convertAndValidateJson(metadata);
     service.uploadDocument(file, uploadDocument);
   }

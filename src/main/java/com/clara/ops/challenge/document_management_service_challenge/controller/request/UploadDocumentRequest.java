@@ -33,6 +33,7 @@ public class UploadDocumentRequest {
   @Schema(description = "The document tags.", requiredMode = REQUIRED)
   private Set<String> tags;
 
+  @Schema(hidden = true)
   public String getFilePath() {
     return getUser().concat("/").concat(getName());
   }

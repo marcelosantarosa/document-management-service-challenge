@@ -171,10 +171,11 @@ Link to access Swagger: http://localhost:8080/swagger-ui.html
 ```bash
 k6 run k6/upload-test.js
 ```
+
 ###### It's necessary have K6 installed on your machine, and put a PDF file on K6 folder with the name "big.pdf" to execute the test.
 
 - In docker-compose I set the deploy memory limit up to 200mb because less than this the service was not able to start, but the application itself is configured to use only 50mb of memory, so it will not exceed this limit.
-- As alternative to upload files with concurrency I tried to use ThreadPoolExecutor and ArrayBlockingQueue with AbortPolicy returning HTTP Status 429, but was necessary more tests to be sure if everything was working as expected. 
+- As alternative to upload files with concurrency I tried to use ThreadPoolExecutor and ArrayBlockingQueue with AbortPolicy returning HTTP Status 429, but was necessary more tests to be sure if everything was working as expected.
 
 ---
 

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,8 @@ public class DocumentService {
 
   @Transactional
   public void uploadDocument(MultipartFile file, UploadDocumentRequest uploadDocument) {
+    validateFileFormat(file);
+
     minioService.uploadFile(file, uploadDocument.getFilePath());
 
     Document doc = mapper.toDocument(uploadDocument, file);
@@ -60,6 +63,15 @@ public class DocumentService {
             .map(minioService::generatePresignedUrl)
             .orElseThrow(() -> new BusinessException("Document not found"));
     return new DocumentDownloadUrlResponse(url);
+  }
+
+  private void validateFileFormat(MultipartFile file) {
+    String contentType = file.getContentType();
+    boolean isPDFFormat = "application/pdf".equalsIgnoreCase(contentType);
+
+    if (BooleanUtils.isFalse(isPDFFormat)) {
+      throw new BusinessException("Only PDF files are allowed.");
+    }
   }
 
   // TODO sort order não está funcionando

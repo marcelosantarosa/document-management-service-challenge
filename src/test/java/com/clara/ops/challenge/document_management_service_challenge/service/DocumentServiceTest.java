@@ -60,6 +60,7 @@ public class DocumentServiceTest {
   @Test
   void uploadDocument_shouldUploadFileAndPersistDocumentAndTags() {
     MultipartFile file = mock(MultipartFile.class);
+    when(file.getContentType()).thenReturn("application/pdf");
     UploadDocumentRequest request =
         new UploadDocumentRequest("marcelo", "contract.pdf", Set.of("legal", "2026"));
     Document doc = Document.builder().id(10).filePath("marcelo/contract.pdf").build();
@@ -79,6 +80,21 @@ public class DocumentServiceTest {
     verify(mapper).toDocumentTags(request, doc);
     verify(tagRepository).saveAll(tags);
     verifyNoMoreInteractions(minioService, repository, tagRepository, mapper);
+  }
+
+  @Test
+  void uploadDocument_shouldThrowBusinessException_whenFileIsNotPdf() {
+    MultipartFile file = mock(MultipartFile.class);
+    when(file.getContentType()).thenReturn("image/png");
+
+    UploadDocumentRequest request =
+            new UploadDocumentRequest("marcelo", "contract.png", Set.of("legal"));
+
+    assertThatThrownBy(() -> service.uploadDocument(file, request))
+            .isInstanceOf(BusinessException.class)
+            .hasMessage("Only PDF files are allowed.");
+
+    verifyNoInteractions(minioService, repository, tagRepository, mapper);
   }
 
   @Test
